@@ -1,0 +1,54 @@
+uses ws.forms.FileFormField
+
+component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, net.dns.DNS dns_ip, net.http.HTTPRequest rq, data.query.Search search{
+	
+
+		bool Web:get(char path[], DocStream s)
+         {
+		
+			char v_Chained[] = get_var_name("CHAINED")
+			char v_Message[] = get_var_name("MESSAGE")
+			if (v_Chained == null){
+				s.writeStatus(200, "", new Header("X-trace", "$(get_host_ip());"))
+			//	s.write("Hello World! From (D - Dana)")
+				s.write("$v_Message")
+			}
+			else{
+			
+				HTTPResponse r = rq.get(v_Chained, null)/*"http://127.0.0.1:5100"*/
+				char m[] =r.content
+				out.println("$m")
+				Header x_trace = search.search(r.headers, Header.[key], new Header("x-trace"))[0]
+				out.println("the key is $(x_trace.value)")
+				char hd[] ="$(get_host_ip());$(x_trace.value)"
+				s.writeStatus(200, "", new Header("X-trace", hd))
+			//	s.write("Hello World! From (D - Dana)  $m")
+				s.write("$v_Message $m")//string concatination done here
+			}
+			
+			
+
+			return true
+         }
+
+		 
+		bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
+         {
+         return true
+         }
+
+		char[] get_host(){
+		
+			return	info.getHostName()
+		}
+		char[] get_host_ip(){
+		
+			return	dns_ip.getHostIP(get_host())
+		
+		}
+		
+		char[] get_var_name(char vnme[]){
+		
+			return	info.getVariable(vnme)
+		}
+	}

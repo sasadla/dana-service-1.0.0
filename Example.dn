@@ -1,0 +1,17 @@
+component provides App requires io.Output out, os.Run run, io.File, data.StringUtil stringUtil {
+
+		int App:main(AppParam params[])
+			{
+			RunStatus s = run.execute("hostname > out.txt")
+			File f = new File("out.txt", File.FILE_ACCESS_READ)
+
+			char q[] = f.read(f.getSize())
+
+			q = stringUtil.explode(q, "\n\r")[0].string
+
+			out.println("Dana hostname: '$q'")
+
+			return 0
+			}
+
+}

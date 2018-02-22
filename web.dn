@@ -1,6 +1,6 @@
 uses ws.forms.FileFormField
 
-component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, net.dns.DNS dns_ip, net.http.HTTPRequest rq, data.query.Search search{
+component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, os.Run run, io.File, data.StringUtil stringUtil, net.http.HTTPRequest rq, data.query.Search search{
 	
 
 		bool Web:get(char path[], DocStream s)
@@ -8,8 +8,6 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 		
 			char v_Chained[] = get_var_name("CHAINED")
 			char v_Message[] = get_var_name("MESSAGE")
-			out.println("hostname: $(get_host())")
-			out.println("hostname: $(get_host_ip())")
 			if (v_Chained == null){
 				s.writeStatus(200, "", new Header("X-trace", "$(get_host_ip());"))
 			//	s.write("Hello World! From (D - Dana)")
@@ -39,13 +37,16 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
          return true
          }
 
-		char[] get_host(){
-		
-			return	info.getHostName()
-		}
 		char[] get_host_ip(){
-		
-			return	dns_ip.getHostIP(get_host())
+			
+			RunStatus s = run.execute("hostname --ip-address > out.txt")
+			File f = new File("out.txt", File.FILE_ACCESS_READ)
+
+			char q[] = f.read(f.getSize())
+
+			q = stringUtil.explode(q, "\n\r")[0].string
+
+			return	q
 		
 		}
 		

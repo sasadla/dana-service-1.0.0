@@ -8,6 +8,8 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 		
 			char v_Chained[] = get_var_name("CHAINED")
 			char v_Message[] = get_var_name("MESSAGE")
+			out.println("hostname: $(get_host())")
+			out.println("hostname: $(get_host_ip())")
 			if (v_Chained == null){
 				s.writeStatus(200, "", new Header("X-trace", "$(get_host_ip());"))
 			//	s.write("Hello World! From (D - Dana)")

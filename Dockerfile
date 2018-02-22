@@ -6,4 +6,6 @@ COPY . /usr/local/bin/app
 
 WORKDIR /usr/local/bin/app
 
+RUN chmod +x ./run.bash
+
 ENTRYPOINT ["./run.bash"]

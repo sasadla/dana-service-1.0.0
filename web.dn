@@ -14,12 +14,13 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 				s.write("$v_Message")
 			}
 			else{
-			
+				
+			//	out.println("$v_Chained")
 				HTTPResponse r = rq.get(v_Chained, null)/*"http://127.0.0.1:5100"*/
 				char m[] =r.content
-				out.println("$m")
+			//	out.println("$m")
 				Header x_trace = search.search(r.headers, Header.[key], new Header("x-trace"))[0]
-				out.println("the key is $(x_trace.value)")
+			//	out.println("the key is $(x_trace.value)")
 				char hd[] ="$(get_host_ip());$(x_trace.value)"
 				s.writeStatus(200, "", new Header("X-trace", hd))
 			//	s.write("Hello World! From (D - Dana)  $m")

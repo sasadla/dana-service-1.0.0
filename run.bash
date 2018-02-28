@@ -5,6 +5,9 @@
 
 dnc web.dn
 echo "Dana Component running on "
-hostname --ip-address
+hostname --ip-address 
 echo " ...."
+dnc ChainSwitch.dn
+dnc ChainSwitchB.dn
+dnc Core.dn
 dana ws.core

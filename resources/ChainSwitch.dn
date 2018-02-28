@@ -1,0 +1,4 @@
+uses ws.DocStream
+interface ChainSwitch{
+   void swtch(DocStream s,char v_Chained[],char v_Message[])
+}

@@ -1,0 +1,7 @@
+uses ws.DocStream
+component provides Core requires io.Output out, ChainSwitch cs {
+	void Core:call(DocStream s,char v_Chained[],char v_Message[])
+		{
+			cs.swtch(s,v_Chained,v_Message)
+		}
+	}

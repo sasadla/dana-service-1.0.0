@@ -1,0 +1,31 @@
+uses ws.DocStream
+component provides ChainSwitch requires net.http.HTTPRequest,ws.FormParser fparser,io.Output out, os.SystemInfo info, os.Run run, io.File, data.StringUtil stringUtil{
+ 
+	void ChainSwitch:swtch(DocStream s,char v_Chained[],char v_Message[])
+	{
+		s.writeStatus(200, "", new Header("X-trace", "$(get_host_ip());"))
+		//	s.write("Hello World! From (D - Dana)")
+		s.write("$v_Message")
+		
+		
+		
+	}
+		
+	char[] get_host_ip(){
+		
+		RunStatus s = run.execute("hostname --ip-address > out.txt")/*--ip-address*/
+		File f = new File("out.txt", File.FILE_ACCESS_READ)
+
+		char q[] = f.read(f.getSize())
+
+		q = stringUtil.explode(q, "\n\r")[0].string
+
+		return	q
+		
+	}
+		
+	char[] get_var_name(char vnme[]){
+		return	info.getVariable(vnme)
+	}
+	
+	}

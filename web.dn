@@ -1,30 +1,44 @@
 uses ws.forms.FileFormField
 
-component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, os.Run run, io.File, data.StringUtil stringUtil, net.http.HTTPRequest rq, data.query.Search search{
+uses Core
+uses ChainSwitch
+
+component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, os.Run run, io.File, data.StringUtil stringUtil, net.http.HTTPRequest rq, data.query.Search search,composition.RecursiveLoader Rloader,Loader ldr, composition.Adapter adapter{
 	
 
 		bool Web:get(char path[], DocStream s)
          {
 		
-			char v_Chained[] = get_var_name("CHAINED")
-			char v_Message[] = get_var_name("MESSAGE")
+		init()
+		
+		char v_Chained[] = get_var_name("CHAINED")
+		char v_Message[] = get_var_name("MESSAGE")
+		
+		
+		LoadedComponents rnr = Rloader.load("Core.o")
+		
+		IDC myComponent = rnr.mainComponent
+		LoadedComponents variantA = Rloader.load("ChainSwitch.o")
+		LoadedComponents variantB = Rloader.load("ChainSwitchB.o")
+ 
+		//bind our required interface to its initial configuration
+		Core myObject = new Core() from myComponent
+
+		//dana.rewire(myComponent :> ChainSwitch, variantA.mainComponent :< ChainSwitch)
+		//char res[]
+		//char hd[]
+		//char msg[]
+ 
+		//test out adaptation...
+			
 			if (v_Chained == null){
-				s.writeStatus(200, "", new Header("X-trace", "$(get_host_ip());"))
-			//	s.write("Hello World! From (D - Dana)")
-				s.write("$v_Message")
+				adapter.adaptRequiredInterface(myComponent, "ChainSwitch", variantB.mainComponent)
+				myObject.call(s,v_Chained,v_Message)
+			
 			}
 			else{
-				
-			//	out.println("$v_Chained")
-				HTTPResponse r = rq.get(v_Chained, null)/*"http://127.0.0.1:5100"*/
-				char m[] =r.content
-			//	out.println("$m")
-				Header x_trace = search.search(r.headers, Header.[key], new Header("x-trace"))[0]
-			//	out.println("the key is $(x_trace.value)")
-				char hd[] ="$(get_host_ip());$(x_trace.value)"
-				s.writeStatus(200, "", new Header("X-trace", hd))
-			//	s.write("Hello World! From (D - Dana)  $m")
-				s.write("$v_Message $m")//string concatination done here
+				adapter.adaptRequiredInterface(myComponent, "ChainSwitch", variantA.mainComponent)
+				myObject.call(s,v_Chained,v_Message)
 			}
 			
 			
@@ -32,7 +46,14 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 			return true
          }
 
-		 
+		void init(){
+		
+			RunStatus s = run.execute("dnc ChainSwitch.dn")
+			s = run.execute("dnc ChainSwitchB.dn")
+			s = run.execute("dnc Core.dn")
+						
+		} 
+		
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
          {
          return true
@@ -40,12 +61,12 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 
 		char[] get_host_ip(){
 			
-			RunStatus s = run.execute("hostname --ip-address > out.txt")
+			RunStatus s = run.execute("hostname> out.txt")/* --ip-address*/ 
 			File f = new File("out.txt", File.FILE_ACCESS_READ)
 
 			char q[] = f.read(f.getSize())
 
-			q = stringUtil.explode(q, "\n\r")[0].string
+			//q = stringUtil.explode(q, "\n\r")[0].string
 
 			return	q
 		

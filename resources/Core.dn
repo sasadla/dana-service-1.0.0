@@ -1,4 +1,4 @@
 uses ws.DocStream
 interface Core{
 	void call(DocStream s,char v_Chained[],char v_Message[])
-	}
+}

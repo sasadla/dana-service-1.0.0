@@ -28,4 +28,4 @@ component provides ChainSwitch requires net.http.HTTPRequest,ws.FormParser fpars
 		return	info.getVariable(vnme)
 	}
 	
-	}
+}

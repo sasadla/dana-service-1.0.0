@@ -30,4 +30,4 @@ component provides ChainSwitch requires ws.FormParser fparser, io.Output out, os
 		
 		return	info.getVariable(vnme)
 	}
-	}
+}

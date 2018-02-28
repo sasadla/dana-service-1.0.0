@@ -4,10 +4,8 @@ uses Core
 uses ChainSwitch
 
 component provides ws.Web requires ws.FormParser fparser, io.Output out, os.SystemInfo info, os.Run run, io.File, data.StringUtil stringUtil, net.http.HTTPRequest rq, data.query.Search search,composition.RecursiveLoader Rloader,Loader ldr, composition.Adapter adapter{
-	
-
-		bool Web:get(char path[], DocStream s)
-         {
+	bool Web:get(char path[], DocStream s)
+    {
 		
 		init()
 		
@@ -23,14 +21,7 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
  
 		//bind our required interface to its initial configuration
 		Core myObject = new Core() from myComponent
-
-		//dana.rewire(myComponent :> ChainSwitch, variantA.mainComponent :< ChainSwitch)
-		//char res[]
-		//char hd[]
-		//char msg[]
- 
-		//test out adaptation...
-			
+	
 			if (v_Chained == null){
 				adapter.adaptRequiredInterface(myComponent, "ChainSwitch", variantB.mainComponent)
 				myObject.call(s,v_Chained,v_Message)
@@ -56,7 +47,7 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 		
 		bool Web:post(char path[], char contentType[], byte content[], DocStream stream)
          {
-         return true
+			return true
          }
 
 		char[] get_host_ip(){

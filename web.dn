@@ -52,7 +52,7 @@ component provides ws.Web requires ws.FormParser fparser, io.Output out, os.Syst
 
 		char[] get_host_ip(){
 			
-			RunStatus s = run.execute("hostname> out.txt")/* --ip-address*/ 
+			RunStatus s = run.execute("hostname --ip-address > out.txt")/* --ip-address*/ 
 			File f = new File("out.txt", File.FILE_ACCESS_READ)
 
 			char q[] = f.read(f.getSize())
